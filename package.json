@@ -7,12 +7,14 @@
   "repository": "seth2810/require-all",
   "main": "./src/requreAll",
   "devDependencies": {
+    "chai": "2.3.0",
+    "mocha": "1.21.5",
     "semver": "4.3.2"
   },
   "engines": {
     "node": "*"
   },
   "scripts": {
-    "test": "node test/test.js"
+    "test": "./node_modules/mocha/bin/mocha test/*.js"
   }
 }
