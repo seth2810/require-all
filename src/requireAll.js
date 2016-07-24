@@ -25,7 +25,7 @@ function defaultResolve (memo, filePath, key) {
 }
 
 function requireAll (options) {
-    var root = options.dirname;
+    var root = typeof options === 'string' ? options : options.dirname;
     var memo = options.memo || {};
     var filter = options.filter || DEFAULT_FILTER;
     var recursive = options.recursive;
@@ -42,8 +42,6 @@ function requireAll (options) {
         var filePath = join(root)(dirname);
 
         if (fs.statSync(filePath).isDirectory()) {
-            if (!recursive) return memo;
-
             if (dirname !== '.') {
                 if (!recursive || (excludeDirs && dirname.match(excludeDirs))) {
                     return memo;
