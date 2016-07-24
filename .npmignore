@@ -1,5 +1,9 @@
+.gitignore
+.npmignore
+.travis.yml
+
 *.log
 *.tgz
-test
-.travis.yml
+
 node_modules
+test

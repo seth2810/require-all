@@ -37,8 +37,9 @@ If your directory contains files that all export constructors, you can require t
 var controllers = require('require-all')({
   dirname     :  __dirname + '/controllers',
   filter      :  /(.+Controller)\.js$/,
-  resolve     : function (Controller) {
-    return new Controller();
+  resolve     : function (memo, filePath, name) {
+    var Controller = require(filePath);
+    memo[name] = new Controller();
   }
 });
 ```
