@@ -8,6 +8,8 @@ function TreeReducer (root) {
 }
 
 TreeReducer.prototype.add = function (node) {
+    if (typeof node === 'undefined') return;
+
     if (isArray(node)) {
         Array.prototype.push.apply(this.queue, node);
     } else {
