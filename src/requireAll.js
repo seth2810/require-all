@@ -20,8 +20,18 @@ function join (dirname) {
     };
 }
 
-function defaultResolve (memo, filePath, key) {
-    memo[key] = require(filePath);
+function defaultResolve (node, filePath, dirname) {
+    var route = String.prototype.split.call(dirname, path.sep || '/'),
+        length = route.length - 1,
+        index = -1,
+        key;
+
+    while (++index < length) {
+        key = route[index];
+        node = node[key] = node[key] || {};
+    }
+
+    node[route[index]] = require(filePath);
 }
 
 function requireAll (options) {
@@ -31,9 +41,10 @@ function requireAll (options) {
     var recursive = options.recursive;
     var map = options.map;
     var resolve = options.resolve;
-    var excludeDirs = options.excludeDirs || DEFAULT_EXCLUDE_DIR;
+    var excludeDirs = options.excludeDirs;
     var reducer = new TreeReducer('.');
 
+    if (typeof excludeDirs === 'undefined') excludeDirs = DEFAULT_EXCLUDE_DIR;
     if (typeof recursive === 'undefined') recursive = DEFAULT_RECURSIVE;
     if (!isFunction(resolve)) resolve = defaultResolve;
     if (!isFunction(map)) map = identity;

@@ -1,21 +1,10 @@
 var assert = require('assert');
 var semver = require('semver');
-var set = require('lodash.set');
 var requireAll = require('../src/requireAll');
-
-function toPath (path) {
-  return String.prototype.replace.call(path || '', /\//g, '.');
-}
-
-function resolve (memo, filePath, key) {
-  set(memo, key, require(filePath));
-}
 
 var controllers = requireAll({
   dirname: __dirname + '/controllers',
-  filter: /(.+Controller)\.js$/,
-  resolve: resolve,
-  map: toPath
+  filter: /(.+Controller)\.js$/
 });
 
 assert.deepEqual(controllers, {
@@ -62,11 +51,8 @@ assert.deepEqual(controllersTop, {
 var controllersMap = requireAll({
   dirname: __dirname + '/controllers',
   filter: /(.+Controller)\.js$/,
-  resolve: resolve,
   map: function (name) {
-    name = toPath(name);
-
-    return name.replace(/-([A-Z])/g, function (m, c) {
+    return name.replace(/-([A-Z])/, function (m, c) {
       return '_' + c.toLowerCase();
     });
   }
@@ -93,13 +79,11 @@ assert.deepEqual(controllersMap, {
   }
 });
 
+
 controllersMap = requireAll({
   dirname: __dirname + '/controllers',
   filter: /(.+Controller)\.js$/,
-  resolve: resolve,
   map: function (name) {
-    name = toPath(name);
-
     return name.replace(/-([A-Za-z])/g, function (m, c) {
       return '_' + c.toLowerCase();
     });
@@ -130,10 +114,7 @@ assert.deepEqual(controllersMap, {
 controllersMap = requireAll({
   dirname: __dirname + '/controllers',
   filter: /(.+Controller)\.js$/,
-  resolve: resolve,
   map: function (name) {
-    name = toPath(name);
-
     return name.replace(/-([A-Za-z])/g, function (m, c) {
       return '_' + c.toLowerCase();
     });
@@ -166,9 +147,7 @@ assert.deepEqual(controllersMap, {
 //
 if (semver.gt(process.version, 'v0.6.0')) {
   var mydir = requireAll({
-    dirname: __dirname + '/mydir',
-    resolve: resolve,
-    map: toPath
+    dirname: __dirname + '/mydir'
   });
 
   var mydir_contents = {
@@ -190,36 +169,23 @@ if (semver.gt(process.version, 'v0.6.0')) {
 
   var defaults = requireAll(__dirname + '/mydir');
 
-  assert.deepEqual(defaults, {
-    foo: 'bar',
-    hello: {
-      world: true,
-      universe: 42
-    },
-    'sub/config': {
-      settingA: 'A',
-      settingB: 'B'
-    },
-    'sub/yes': true
-  });
+  assert.deepEqual(defaults, mydir_contents);
 }
 
-// var unfiltered = requireAll({
-//   dirname: __dirname + '/filterdir',
-//   filter: /(.+)\.js$/,
-//   excludeDirs: false
-// });
+var unfiltered = requireAll({
+  dirname: __dirname + '/filterdir',
+  filter: /(.+)\.js$/,
+  excludeDirs: false
+});
 
-// assert(unfiltered['.svn']);
-// assert(unfiltered.root);
-// assert(unfiltered.sub);
+assert(unfiltered['.svn']);
+assert(unfiltered.root);
+assert(unfiltered.sub);
 
 var excludedSvn = requireAll({
   dirname: __dirname + '/filterdir',
   filter: /(.+)\.js$/,
-  excludeDirs: /^\.svn$/,
-  resolve: resolve,
-  map: toPath
+  excludeDirs: /^\.svn$/
 });
 
 assert.equal(excludedSvn['.svn'], undefined);
@@ -229,9 +195,7 @@ assert.ok(excludedSvn.sub);
 var excludedSvnAndSub = requireAll({
   dirname: __dirname + '/filterdir',
   filter: /(.+)\.js$/,
-  excludeDirs: /^(\.svn|sub)/,
-  resolve: resolve,
-  map: toPath
+  excludeDirs: /^(\.svn|sub)$/
 });
 
 assert.equal(excludedSvnAndSub['.svn'], undefined);
