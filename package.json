@@ -5,7 +5,7 @@
   "author": "Roman Gafurov <gafurov.roma89@gmail.com>",
   "license": "MIT",
   "repository": "seth2810/require-all",
-  "main": "./src/requreAll",
+  "main": "src/requireAll.js",
   "devDependencies": {
     "chai": "2.3.0",
     "mocha": "1.21.5",
